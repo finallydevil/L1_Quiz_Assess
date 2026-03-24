@@ -1,5 +1,6 @@
 import random
 
+# Instructions
 def instructions():
     print('''
 
@@ -16,6 +17,7 @@ Good Luck!!!!!!!!!!!!!
 
     ''')
 
+# Yes or No checker
 def yes_no(question):
     while True:
         response = input(question).lower()
@@ -29,6 +31,7 @@ def yes_no(question):
         else:
             print("please enter 'yes' or 'no'")
 
+# Integer checker
 def int_check(question, low=None, exit_code="xxx"):
 
     # if any int is allowed
