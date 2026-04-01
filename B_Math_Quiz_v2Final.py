@@ -1,7 +1,25 @@
 import random
 
+# Yes or No checker
+def yes_no(question):
+    """Checks that the users response to a question is yes / no (y/n), returns 'yes' or 'no' """
+
+    while True:
+        response = input(question).lower()
+
+        # check response,
+        # check if user says yes or no
+        if response == "yes" or response == "y":
+            return "yes"
+        elif response == "no" or response == "n":
+            return "no"
+        else:
+            print("please enter 'yes' or 'no'")
+
 # Instructions
 def instructions():
+    """Prints the instructions if user asks for it"""
+
     print('''
 
 **** Instructions ****
@@ -17,22 +35,9 @@ Good Luck!!!!!!!!!!!!!
 
     ''')
 
-# Yes or No checker
-def yes_no(question):
-    while True:
-        response = input(question).lower()
-
-        # check response,
-        # check if user says yes or no
-        if response == "yes" or response == "y":
-            return "yes"
-        elif response == "no" or response == "n":
-            return "no"
-        else:
-            print("please enter 'yes' or 'no'")
-
 # Integer checker
 def int_check(question, low=None, exit_code="xxx"):
+    """Checks that users enter an integer, makes sure they enter a valid number."""
 
     # if any int is allowed
     if low is None:
@@ -74,15 +79,14 @@ def int_check(question, low=None, exit_code="xxx"):
 
 # Initialize game variables
 mode = "regular"
+end_game = "no"
+feedback = ""
 rounds_played = 0
 user_wrong = 0
 user_right = 0
-end_game = "no"
-feedback = ""
-
 game_history = []
-all_scores = []
 
+# Prints the introduction to the quiz.
 print("➕➖✖️ Welcome to the fun and amazing Math Quiz!!! ➕➖✖️")
 print()
 
@@ -97,16 +101,18 @@ if want_instructions == "yes":
 num_rounds = int_check("Rounds <enter for infinite>: ",
                        low=1, exit_code="")
 
-# initialize number of rounds for infinite mode
+# Initialize number of rounds for infinite mode
 if num_rounds == "":
     mode = "infinite"
     num_rounds = 5
 
-# game loop starts here
 
+# Game loop starts here
+
+# Create a while loop
 while rounds_played < num_rounds:
 
-    # Headings
+    # Print the headings
     if mode == "infinite":
         rounds_heading = f"\n♾️♾️♾️ Round {rounds_played + 1} (infinite mode) ♾️♾️♾️"
     else:
@@ -114,11 +120,11 @@ while rounds_played < num_rounds:
 
     print(rounds_heading)
 
-    # Pick 2 random numbers for the equation
+    # Pick 2 random numbers between one and twelve for the equation
     roll_one = random.randint(0, 12)
     roll_two = random.randint(0, 12)
 
-    # pick a random symbol for the equation
+    # Pick a random symbol between add, subtract, and multiply for the equation
     symbol_list = ['+', '-', '*',]
     symbol = random.choice(symbol_list)
     symbol = str(symbol)
@@ -129,51 +135,64 @@ while rounds_played < num_rounds:
     print(f"Question {rounds_played+1}: {roll_one} {symbol} {roll_two}")
     user_ans = int_check("What is your answer? ", low=None, exit_code="xxx")
 
-    # check if user gets the question right
+    # Check if the user gets the question right, prints feedback and adds 1
+    # to the amount of questions the user answered right.
     if user_ans == question_ans:
-        feedback = f"Correct! You guessed {user_ans}, and the correct answer is also {question_ans}!"
+        feedback = (f"Correct! You guessed {user_ans}!"
+                    f"The correct answer is also {question_ans}! 😎")
         user_right += 1
-    # exit code
+    # Exit code
     if user_ans == "xxx":
         print("Now exiting...")
         break
-    # check if user gets the question wrong
+    # Check if the user gets the question wrong, prints feedback and adds 1
+    # to the amount of questions the user answered wrong.
     elif user_ans != question_ans:
-        feedback = f"Incorrect! You guessed {user_ans}, but the correct answer was {question_ans}!"
+        feedback = (f"Incorrect! You guessed {user_ans}..."
+                    f"The correct answer was instead {question_ans}. 😢")
         user_wrong += 1
 
+    # Prints feedback
     print(feedback)
     print()
 
-
-    # Game History and Stats
-
-    # generate round results and add it to the game history list
+    # Generate round results and add it to the game history list.
     history_feedback = f"Round {rounds_played + 1}: {feedback}"
 
     game_history.append(history_feedback)
 
-    # increase number of rounds played
+    # Increase number of rounds played by one each time the user plays a round.
     rounds_played += 1
 
-    # if users in infinite mode, increase number of rounds!
+    # If users in infinite mode, increase number of rounds.
     if mode == "infinite":
         num_rounds += 1
+        # If users in infinite mode, ask them if they want to quit after answering.
+        infinite_ans = yes_no("Would you like to keep playing? ")
+        if infinite_ans == "yes":
+            continue
+        if infinite_ans == "no":
+            print("Now exiting infinite mode... ")
+            break
 
-# check users have played at least one round
+
+# Game history and statistics area
+
+# Check users have played at least one round
 # before calculating stats.
 if rounds_played > 0:
-    # calculate stats
-    rounds_won = rounds_played - user_wrong
-    percent_won = user_right / rounds_played * 100
-    percent_lost = user_wrong / rounds_played * 100
+    # Calculate statistics
+    rounds_right = rounds_played - user_wrong
+    percent_right = user_right / rounds_played * 100
+    percent_wrong = user_wrong / rounds_played * 100
 
-    # Output Game Stats
+    # Output Game Statistics
     print("📊📊📊 Game Statistics 📊📊📊")
-    print(f"😎 Percentage of games won: {percent_won:.2f}% \t "
-          f"😭 Percentage of games lost: {percent_lost:.2f}% \t ")
+    print(f"😎 Percentage of games won: {percent_right:.2f}% \t "
+          f"😭 Percentage of games lost: {percent_wrong:.2f}% \t "
+          f"😀 Amount of correct answers: {rounds_right} out of {rounds_played}")
 
-    # ask user if they want to see game history
+    # Ask user if they want to see game history
     if user_ans != "xxx":
         see_history = yes_no("Do you want to see the game history? ")
         if see_history == "yes":
